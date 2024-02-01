@@ -1,5 +1,6 @@
 package org.embulk.output.kintone;
 
+import com.kintone.client.model.User;
 import com.kintone.client.model.record.CheckBoxFieldValue;
 import com.kintone.client.model.record.DateFieldValue;
 import com.kintone.client.model.record.DateTimeFieldValue;
@@ -13,13 +14,12 @@ import com.kintone.client.model.record.Record;
 import com.kintone.client.model.record.SingleLineTextFieldValue;
 import com.kintone.client.model.record.UpdateKey;
 import com.kintone.client.model.record.UserSelectFieldValue;
-import com.kintone.client.model.User;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
