@@ -12,18 +12,24 @@ import com.kintone.client.model.record.NumberFieldValue;
 import com.kintone.client.model.record.Record;
 import com.kintone.client.model.record.SingleLineTextFieldValue;
 import com.kintone.client.model.record.UpdateKey;
+import com.kintone.client.model.record.UserSelectFieldValue;
+import com.kintone.client.model.User;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.embulk.spi.Column;
 import org.embulk.spi.ColumnVisitor;
+import org.embulk.spi.DataException;
 import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
+import org.msgpack.value.ArrayValue;
+import org.msgpack.value.Value;
 
 public class KintoneColumnVisitor implements ColumnVisitor {
   private final PageReader pageReader;
@@ -75,6 +81,28 @@ public class KintoneColumnVisitor implements ColumnVisitor {
         break;
       default:
         fieldValue = new SingleLineTextFieldValue(stringValue);
+    }
+    record.putField(fieldCode, fieldValue);
+  }
+
+  private void setJsonValue(String fieldCode, Value value, FieldType type) {
+    FieldValue fieldValue;
+    switch (type) {
+      case USER_SELECT:
+        if (!value.isArrayValue()) {
+          throw new DataException("USER_SELECT should be an array of USER");
+        }
+
+        List<User> users = new ArrayList<>();
+        ArrayValue values = value.asArrayValue();
+        for (Value v : values) {
+          String stringValue = Objects.toString(v, "");
+          users.add(new User(stringValue));
+        }
+        fieldValue = new UserSelectFieldValue(users);
+        break;
+      default:
+        fieldValue = new SingleLineTextFieldValue(Objects.toString(value, ""));
     }
     record.putField(fieldCode, fieldValue);
   }
@@ -203,6 +231,12 @@ public class KintoneColumnVisitor implements ColumnVisitor {
   public void jsonColumn(Column column) {
     String fieldCode = getFieldCode(column);
     FieldType type = getType(column, FieldType.MULTI_LINE_TEXT);
-    setValue(fieldCode, pageReader.getJson(column), type, isUpdateKey(column));
+    switch (type) {
+      case USER_SELECT:
+        setJsonValue(fieldCode, pageReader.getJson(column), type);
+        break;
+      default:
+        setValue(fieldCode, pageReader.getJson(column), type, isUpdateKey(column));
+    }
   }
 }
