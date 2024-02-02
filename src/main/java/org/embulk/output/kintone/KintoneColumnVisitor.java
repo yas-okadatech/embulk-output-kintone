@@ -29,9 +29,13 @@ import org.embulk.spi.DataException;
 import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
 import org.msgpack.value.ArrayValue;
+import org.msgpack.value.MapValue;
 import org.msgpack.value.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KintoneColumnVisitor implements ColumnVisitor {
+  private static final Logger LOGGER = LoggerFactory.getLogger(KintoneColumnVisitor.class);
   private final PageReader pageReader;
   private Record record;
   private UpdateKey updateKey;
@@ -96,8 +100,9 @@ public class KintoneColumnVisitor implements ColumnVisitor {
         List<User> users = new ArrayList<>();
         ArrayValue values = value.asArrayValue();
         for (Value v : values) {
-          String stringValue = Objects.toString(v, "");
-          users.add(new User(stringValue));
+          MapValue user = v.asMapValue();
+          LOGGER.info("user {}, {}", user, user.getClass());
+          users.add(new User("test"));
         }
         fieldValue = new UserSelectFieldValue(users);
         break;
