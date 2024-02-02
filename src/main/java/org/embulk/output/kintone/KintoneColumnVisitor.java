@@ -89,11 +89,10 @@ public class KintoneColumnVisitor implements ColumnVisitor {
         ArrayValue values = value.asArrayValue();
         LOGGER.info("values {}, {}", values, values.size());
         for (Value v : values) {
-          MapValue user = v.asMapValue();
+          Map<> user = v.asMapValue().map();
           LOGGER.info("user {}, {}", user, user.getClass());
-          users.add(new User("test@example", "test"));
+          users.add(new User(user.get("name").toString(), user.get("code").toString()));
         }
-        users.add(new User("test@example", "test"));
         fieldValue = new UserSelectFieldValue(users);
         break;
       default:
