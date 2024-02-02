@@ -18,6 +18,7 @@ import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
 import org.msgpack.value.ArrayValue;
 import org.msgpack.value.Value;
+import org.msgpack.value.ValueFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,7 +93,9 @@ public class KintoneColumnVisitor implements ColumnVisitor {
           LOGGER.info("user {}, {}", user, user.getClass());
           LOGGER.info(
               "key: {}, {}", user.keySet().toArray()[0].getClass(), user.keySet().toArray()[0]);
-          users.add(new User(user.get("name").toString(), user.get("code").toString()));
+          String name = String.valueOf(user.get(ValueFactory.newString("name")));
+          String code = String.valueOf(user.get(ValueFactory.newString("code")));
+          users.add(new User(name, code));
         }
         fieldValue = new UserSelectFieldValue(users);
         break;
