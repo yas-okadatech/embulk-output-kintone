@@ -17,7 +17,6 @@ import org.embulk.spi.DataException;
 import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
 import org.msgpack.value.ArrayValue;
-import org.msgpack.value.MapValue;
 import org.msgpack.value.Value;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,7 +88,7 @@ public class KintoneColumnVisitor implements ColumnVisitor {
         ArrayValue values = value.asArrayValue();
         LOGGER.info("values {}, {}", values, values.size());
         for (Value v : values) {
-          Map<> user = v.asMapValue().map();
+          Map user = v.asMapValue().map();
           LOGGER.info("user {}, {}", user, user.getClass());
           users.add(new User(user.get("name").toString(), user.get("code").toString()));
         }
