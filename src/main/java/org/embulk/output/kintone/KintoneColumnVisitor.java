@@ -87,11 +87,13 @@ public class KintoneColumnVisitor implements ColumnVisitor {
 
         List<User> users = new ArrayList<>();
         ArrayValue values = value.asArrayValue();
+        LOGGER.info("values {}, {}", values, values.size());
         for (Value v : values) {
           MapValue user = v.asMapValue();
           LOGGER.info("user {}, {}", user, user.getClass());
-          users.add(new User("test"));
+          users.add(new User("test@example", "test"));
         }
+        users.add(new User("test@example", "test"));
         fieldValue = new UserSelectFieldValue(users);
         break;
       default:
@@ -225,9 +227,10 @@ public class KintoneColumnVisitor implements ColumnVisitor {
     LOGGER.info("jsonColumn: {}", column.getName());
     String fieldCode = getFieldCode(column);
     FieldType type = getType(column, FieldType.MULTI_LINE_TEXT);
+    LOGGER.info("type: {}", type);
     switch (type) {
       case USER_SELECT:
-        //        setJsonValue(fieldCode, pageReader.getJson(column), type);
+        setJsonValue(fieldCode, pageReader.getJson(column), type);
         break;
       default:
         setValue(fieldCode, pageReader.getJson(column), type, isUpdateKey(column));
