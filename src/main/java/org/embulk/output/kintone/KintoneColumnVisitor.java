@@ -222,6 +222,7 @@ public class KintoneColumnVisitor implements ColumnVisitor {
 
   @Override
   public void jsonColumn(Column column) {
+    LOGGER.info("jsonColumn: {}", column.getName());
     String fieldCode = getFieldCode(column);
     FieldType type = getType(column, FieldType.MULTI_LINE_TEXT);
     switch (type) {
