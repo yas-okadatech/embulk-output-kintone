@@ -1,18 +1,7 @@
 package org.embulk.output.kintone;
 
 import com.kintone.client.model.User;
-import com.kintone.client.model.record.CheckBoxFieldValue;
-import com.kintone.client.model.record.DateFieldValue;
-import com.kintone.client.model.record.DateTimeFieldValue;
-import com.kintone.client.model.record.DropDownFieldValue;
-import com.kintone.client.model.record.FieldType;
-import com.kintone.client.model.record.FieldValue;
-import com.kintone.client.model.record.LinkFieldValue;
-import com.kintone.client.model.record.MultiLineTextFieldValue;
-import com.kintone.client.model.record.NumberFieldValue;
-import com.kintone.client.model.record.Record;
-import com.kintone.client.model.record.SingleLineTextFieldValue;
-import com.kintone.client.model.record.UpdateKey;
+import com.kintone.client.model.record.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -103,9 +92,8 @@ public class KintoneColumnVisitor implements ColumnVisitor {
           LOGGER.info("user {}, {}", user, user.getClass());
           users.add(new User("test"));
         }
-        return;
-        //        fieldValue = new UserSelectFieldValue(users);
-        //        break;
+        fieldValue = new UserSelectFieldValue(users);
+        break;
       default:
         fieldValue = new SingleLineTextFieldValue(Objects.toString(value, ""));
     }
@@ -238,7 +226,7 @@ public class KintoneColumnVisitor implements ColumnVisitor {
     FieldType type = getType(column, FieldType.MULTI_LINE_TEXT);
     switch (type) {
       case USER_SELECT:
-        setJsonValue(fieldCode, pageReader.getJson(column), type);
+        //        setJsonValue(fieldCode, pageReader.getJson(column), type);
         break;
       default:
         setValue(fieldCode, pageReader.getJson(column), type, isUpdateKey(column));
