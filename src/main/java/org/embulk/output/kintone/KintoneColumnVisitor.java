@@ -13,7 +13,6 @@ import com.kintone.client.model.record.NumberFieldValue;
 import com.kintone.client.model.record.Record;
 import com.kintone.client.model.record.SingleLineTextFieldValue;
 import com.kintone.client.model.record.UpdateKey;
-import com.kintone.client.model.record.UserSelectFieldValue;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -104,8 +103,9 @@ public class KintoneColumnVisitor implements ColumnVisitor {
           LOGGER.info("user {}, {}", user, user.getClass());
           users.add(new User("test"));
         }
-        fieldValue = new UserSelectFieldValue(users);
-        break;
+        return;
+        //        fieldValue = new UserSelectFieldValue(users);
+        //        break;
       default:
         fieldValue = new SingleLineTextFieldValue(Objects.toString(value, ""));
     }
