@@ -1,31 +1,45 @@
 package org.embulk.output.kintone;
 
+import com.kintone.client.model.Group;
+import com.kintone.client.model.Organization;
+import com.kintone.client.model.User;
 import com.kintone.client.model.record.CheckBoxFieldValue;
 import com.kintone.client.model.record.DateFieldValue;
 import com.kintone.client.model.record.DateTimeFieldValue;
 import com.kintone.client.model.record.DropDownFieldValue;
 import com.kintone.client.model.record.FieldType;
 import com.kintone.client.model.record.FieldValue;
+import com.kintone.client.model.record.GroupSelectFieldValue;
 import com.kintone.client.model.record.LinkFieldValue;
 import com.kintone.client.model.record.MultiLineTextFieldValue;
 import com.kintone.client.model.record.NumberFieldValue;
+import com.kintone.client.model.record.OrganizationSelectFieldValue;
 import com.kintone.client.model.record.Record;
 import com.kintone.client.model.record.SingleLineTextFieldValue;
 import com.kintone.client.model.record.UpdateKey;
+import com.kintone.client.model.record.UserSelectFieldValue;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.embulk.spi.Column;
 import org.embulk.spi.ColumnVisitor;
+import org.embulk.spi.DataException;
 import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
+import org.msgpack.value.ArrayValue;
+import org.msgpack.value.Value;
+import org.msgpack.value.ValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KintoneColumnVisitor implements ColumnVisitor {
+  private static final Logger LOGGER = LoggerFactory.getLogger(KintoneColumnVisitor.class);
   private final PageReader pageReader;
   private Record record;
   private UpdateKey updateKey;
@@ -75,6 +89,66 @@ public class KintoneColumnVisitor implements ColumnVisitor {
         break;
       default:
         fieldValue = new SingleLineTextFieldValue(stringValue);
+    }
+    record.putField(fieldCode, fieldValue);
+  }
+
+  private void setJsonValue(String fieldCode, Value value, FieldType type) {
+    FieldValue fieldValue;
+    switch (type) {
+      case USER_SELECT:
+        {
+          if (!value.isArrayValue()) {
+            throw new DataException("USER_SELECT should be an array of USER");
+          }
+
+          List<User> users = new ArrayList<>();
+          ArrayValue values = value.asArrayValue();
+          for (Value v : values) {
+            Map user = v.asMapValue().map();
+            String name = String.valueOf(user.get(ValueFactory.newString("name")));
+            String code = String.valueOf(user.get(ValueFactory.newString("code")));
+            users.add(new User(name, code));
+          }
+          fieldValue = new UserSelectFieldValue(users);
+        }
+        break;
+      case ORGANIZATION_SELECT:
+        {
+          if (!value.isArrayValue()) {
+            throw new DataException("ORGANIZATION_SELECT should be an array of ORGANIZATION");
+          }
+
+          List<Organization> organizations = new ArrayList<>();
+          ArrayValue values = value.asArrayValue();
+          for (Value v : values) {
+            Map organization = v.asMapValue().map();
+            String name = String.valueOf(organization.get(ValueFactory.newString("name")));
+            String code = String.valueOf(organization.get(ValueFactory.newString("code")));
+            organizations.add(new Organization(name, code));
+          }
+          fieldValue = new OrganizationSelectFieldValue(organizations);
+        }
+        break;
+      case GROUP_SELECT:
+        {
+          if (!value.isArrayValue()) {
+            throw new DataException("GROUP_SELECT should be an array of GROUP");
+          }
+
+          List<Group> groups = new ArrayList<>();
+          ArrayValue values = value.asArrayValue();
+          for (Value v : values) {
+            Map group = v.asMapValue().map();
+            String name = String.valueOf(group.get(ValueFactory.newString("name")));
+            String code = String.valueOf(group.get(ValueFactory.newString("code")));
+            groups.add(new Group(name, code));
+          }
+          fieldValue = new GroupSelectFieldValue(groups);
+        }
+        break;
+      default:
+        fieldValue = new SingleLineTextFieldValue(Objects.toString(value, ""));
     }
     record.putField(fieldCode, fieldValue);
   }
@@ -203,6 +277,14 @@ public class KintoneColumnVisitor implements ColumnVisitor {
   public void jsonColumn(Column column) {
     String fieldCode = getFieldCode(column);
     FieldType type = getType(column, FieldType.MULTI_LINE_TEXT);
-    setValue(fieldCode, pageReader.getJson(column), type, isUpdateKey(column));
+    switch (type) {
+      case USER_SELECT:
+      case ORGANIZATION_SELECT:
+      case GROUP_SELECT:
+        setJsonValue(fieldCode, pageReader.getJson(column), type);
+        break;
+      default:
+        setValue(fieldCode, pageReader.getJson(column), type, isUpdateKey(column));
+    }
   }
 }
