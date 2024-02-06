@@ -94,6 +94,10 @@ public class KintoneColumnVisitor implements ColumnVisitor {
   }
 
   private void setJsonValue(String fieldCode, Value value, FieldType type) {
+    if (value == null) {
+      return;
+    }
+
     FieldValue fieldValue;
     switch (type) {
       case USER_SELECT:
