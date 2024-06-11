@@ -261,7 +261,7 @@ public enum KintoneColumnType {
 
     @Override
     public UserSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      throw new UnsupportedOperationException();
+      return DESERIALIZER.deserialize(value.isEmpty() ? "[]" : value, UserSelectFieldValue.class);
     }
 
     @Override
