@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -255,8 +256,15 @@ public class Reducer {
   }
 
   private static Type type(PluginTask task, String name) {
-    return KintoneColumnType.getType(task.getColumnOptions().get(name), KintoneColumnType.SUBTABLE)
-            == KintoneColumnType.SUBTABLE
+    List<KintoneColumnType> JSON_TYPES =
+        Arrays.asList(
+            KintoneColumnType.SUBTABLE,
+            KintoneColumnType.USER_SELECT,
+            KintoneColumnType.ORGANIZATION_SELECT,
+            KintoneColumnType.GROUP_SELECT);
+    return JSON_TYPES.contains(
+            KintoneColumnType.getType(
+                task.getColumnOptions().get(name), KintoneColumnType.SUBTABLE))
         ? Types.JSON
         : Types.STRING;
   }
