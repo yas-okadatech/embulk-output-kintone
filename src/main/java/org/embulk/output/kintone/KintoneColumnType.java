@@ -261,6 +261,7 @@ public enum KintoneColumnType {
 
     @Override
     public UserSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
+      System.out.printf("USER_SELECT::getFieldValue: value=%s%n", value);
       return DESERIALIZER.deserialize(value.isEmpty() ? "[]" : value, UserSelectFieldValue.class);
     }
 
