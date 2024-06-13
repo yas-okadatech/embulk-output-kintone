@@ -168,7 +168,11 @@ public class Deserializer {
 
   private User deserializeUser(JsonParser parser, DeserializationContext context) {
     JsonNode node = readTree(parser);
-    return new User(get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    if (node.isObject()) {
+      return new User(get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    } else {
+      return new User(node.asText());
+    }
   }
 
   private OrganizationSelectFieldValue deserializeOrganizationSelect(
