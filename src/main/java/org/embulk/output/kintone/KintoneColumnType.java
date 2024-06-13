@@ -20,6 +20,7 @@ import com.kintone.client.model.record.SubtableFieldValue;
 import com.kintone.client.model.record.TimeFieldValue;
 import com.kintone.client.model.record.UpdateKey;
 import com.kintone.client.model.record.UserSelectFieldValue;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,6 +40,8 @@ import org.msgpack.value.ArrayValue;
 import org.msgpack.value.StringValue;
 import org.msgpack.value.Value;
 import org.msgpack.value.ValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum KintoneColumnType {
   SINGLE_LINE_TEXT {
@@ -261,7 +264,7 @@ public enum KintoneColumnType {
 
     @Override
     public UserSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      System.out.printf("USER_SELECT::getFieldValue: value=%s%n", value);
+      LOGGER.info("USER_SELECT::getFieldValue: value={}", value);
       return DESERIALIZER.deserialize(value.isEmpty() ? "[]" : value, UserSelectFieldValue.class);
     }
 
@@ -504,6 +507,8 @@ public enum KintoneColumnType {
   };
   private static final Deserializer DESERIALIZER = new Deserializer();
   private static final Timestamp EPOCH = Timestamp.ofInstant(Instant.EPOCH);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static KintoneColumnType getType(
       KintoneColumnOption option, KintoneColumnType defaultType) {
