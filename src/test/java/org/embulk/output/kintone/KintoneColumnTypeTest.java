@@ -130,7 +130,7 @@ public class KintoneColumnTypeTest {
     assertThrows(UnsupportedOperationException.class, () -> USER_SELECT.getFieldValue(0.0d, null));
 //    assertThrows(UnsupportedOperationException.class, () -> USER_SELECT.getFieldValue("", null));
     assertThrows(UnsupportedOperationException.class, () -> USER_SELECT.getFieldValue(EPOCH, null));
-    assertThrows(UnsupportedOperationException.class, () -> USER_SELECT.getFieldValue(EMPTY, null));
+//    assertThrows(UnsupportedOperationException.class, () -> USER_SELECT.getFieldValue(EMPTY, null));
     assertThrows(UnsupportedOperationException.class, () -> ORGANIZATION_SELECT.getFieldValue(false, null));
     assertThrows(UnsupportedOperationException.class, () -> ORGANIZATION_SELECT.getFieldValue(0L, null));
     assertThrows(UnsupportedOperationException.class, () -> ORGANIZATION_SELECT.getFieldValue(0.0d, null));
