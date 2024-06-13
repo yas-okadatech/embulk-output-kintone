@@ -191,6 +191,12 @@ public class KintoneColumnVisitor implements ColumnVisitor {
     KintoneColumnType defaultType =
         isDerived(column) ? KintoneColumnType.SUBTABLE : KintoneColumnType.MULTI_LINE_TEXT;
     KintoneColumnType type = KintoneColumnType.getType(option, defaultType);
+    LOGGER.info(
+        "jsonColumn: column={}, option={}, option.type={}, type={}",
+        column,
+        option,
+        option.getType(),
+        type);
     String fieldCode = getFieldCode(column);
     if (isBuiltin(fieldCode)) {
       return;
