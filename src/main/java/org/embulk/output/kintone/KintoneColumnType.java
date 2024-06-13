@@ -275,7 +275,7 @@ public enum KintoneColumnType {
 
     @Override
     protected List<Type> getSupportedTypes() {
-      return Collections.emptyList();
+      return Collections.singletonList(Types.JSON);
     }
   },
   ORGANIZATION_SELECT {
