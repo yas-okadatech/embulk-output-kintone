@@ -292,7 +292,7 @@ public class KintoneColumnVisitor implements ColumnVisitor {
       UpdateKey updateKey,
       Value value,
       KintoneColumnOption option) {
-    LOGGER.info("setJson: fieldCode={}, value={}", fieldCode, value.toString());
+    LOGGER.info("setJson: type={}, fieldCode={}, value={}", type, fieldCode, value.toString());
     FieldValue fieldValue = type.getFieldValue(value, option);
     if (updateKey != null) {
       type.setUpdateKey(updateKey, fieldCode, fieldValue);
