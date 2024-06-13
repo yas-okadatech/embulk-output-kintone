@@ -195,7 +195,7 @@ public class KintoneColumnVisitor implements ColumnVisitor {
         "jsonColumn: column={}, option={}, option.type={}, type={}",
         column,
         option,
-        option.getType(),
+        option == null ? "null" : option.getType(),
         type);
     String fieldCode = getFieldCode(column);
     if (isBuiltin(fieldCode)) {
