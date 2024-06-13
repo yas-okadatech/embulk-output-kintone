@@ -68,6 +68,7 @@ public class Reducer {
     this.schema = schema(task, schema);
     this.task.setDerivedColumns(
         range().mapToObj(this.schema::getColumn).collect(Collectors.toSet()));
+    LOGGER.info("Derived columns: {}", this.task.getDerivedColumns());
   }
 
   public ConfigDiff reduce(List<TaskReport> taskReports, Column column) {
