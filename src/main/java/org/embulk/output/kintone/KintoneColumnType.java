@@ -261,7 +261,7 @@ public enum KintoneColumnType {
 
     @Override
     public UserSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      throw new UnsupportedOperationException();
+      return DESERIALIZER.deserialize(value.isEmpty() ? "[]" : value, UserSelectFieldValue.class);
     }
 
     @Override
@@ -271,7 +271,7 @@ public enum KintoneColumnType {
 
     @Override
     protected List<Type> getSupportedTypes() {
-      return Collections.emptyList();
+      return Collections.singletonList(Types.JSON);
     }
   },
   ORGANIZATION_SELECT {
@@ -282,7 +282,8 @@ public enum KintoneColumnType {
 
     @Override
     public OrganizationSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      throw new UnsupportedOperationException();
+      return DESERIALIZER.deserialize(
+          value.isEmpty() ? "[]" : value, OrganizationSelectFieldValue.class);
     }
 
     @Override
@@ -292,7 +293,7 @@ public enum KintoneColumnType {
 
     @Override
     protected List<Type> getSupportedTypes() {
-      return Collections.emptyList();
+      return Collections.singletonList(Types.JSON);
     }
   },
   GROUP_SELECT {
@@ -303,7 +304,7 @@ public enum KintoneColumnType {
 
     @Override
     public GroupSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      throw new UnsupportedOperationException();
+      return DESERIALIZER.deserialize(value.isEmpty() ? "[]" : value, GroupSelectFieldValue.class);
     }
 
     @Override
@@ -313,7 +314,7 @@ public enum KintoneColumnType {
 
     @Override
     protected List<Type> getSupportedTypes() {
-      return Collections.emptyList();
+      return Collections.singletonList(Types.JSON);
     }
   },
   DATE {
