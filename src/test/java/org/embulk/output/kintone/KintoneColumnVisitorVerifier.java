@@ -68,6 +68,8 @@ public class KintoneColumnVisitorVerifier {
   }
 
   private void verify(Record record, Column column, boolean nullable) {
+    System.out.printf(
+        "column=%s, option.type=%s", column.toString(), options.get(column.getName()).getType());
     FieldType expected = FieldType.valueOf(options.get(column.getName()).getType());
     FieldType actual = record.getFieldType(column.getName());
     if (actual == null && nullable) {

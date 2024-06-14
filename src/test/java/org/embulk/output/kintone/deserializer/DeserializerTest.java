@@ -37,8 +37,53 @@ import org.junit.Test;
 
 public class DeserializerTest {
   // spotless:off
-  public static final Function<Long, String> TABLE_ROW = (id) -> String.format("{\"id\":%d,\"value\":{\"リッチエディター\":{\"type\":\"RICH_TEXT\",\"value\":\"\\u003ca href\\u003d\\\"https://www.cybozu.com\\\"\\u003eサイボウズ\\u003c/a\\u003e\"},\"グループ選択\":{\"type\":\"GROUP_SELECT\",\"value\":[{\"name\":\"プロジェクトマネージャー\",\"code\":\"project_manager\"},{\"name\":\"チームリーダー\",\"code\":\"team_leader\"}]},\"文字列（1行）\":{\"type\":\"SINGLE_LINE_TEXT\",\"value\":\"テストです。\"},\"ラジオボタン\":{\"type\":\"RADIO_BUTTON\",\"value\":\"選択肢3\"},\"ドロップダウン\":{\"type\":\"DROP_DOWN\",\"value\":\"選択肢6\"},\"組織選択\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[{\"name\":\"開発部\",\"code\":\"kaihatsu\"},{\"name\":\"人事部\",\"code\":\"jinji\"}]},\"ユーザー選択\":{\"type\":\"USER_SELECT\",\"value\":[{\"name\":\"Noboru Sato\",\"code\":\"guest/sato@cybozu.com\"},{\"name\":\"Misaki Kato\",\"code\":\"kato\"}]},\"日時\":{\"type\":\"DATETIME\",\"value\":\"2012-01-11T11:30:00Z\"},\"文字列（複数行）\":{\"type\":\"MULTI_LINE_TEXT\",\"value\":\"テスト\\nです。\"},\"時刻\":{\"type\":\"TIME\",\"value\":\"11:30\"},\"チェックボックス\":{\"type\":\"CHECK_BOX\",\"value\":[\"選択肢1\",\"選択肢2\"]},\"複数選択\":{\"type\":\"MULTI_SELECT\",\"value\":[\"選択肢4\",\"選択肢5\"]},\"数値\":{\"type\":\"NUMBER\",\"value\":\"123\"},\"添付ファイル\":{\"type\":\"FILE\",\"value\":[{\"contentType\":\"text/plain\",\"fileKey\":\"201202061155587E339F9067544F1A92C743460E3D12B3297\",\"name\":\"17to20_VerupLog (1).txt\",\"size\":\"23175\"},{\"contentType\":\"application/json\",\"fileKey\":\"201202061155583C763E30196F419E83E91D2E4A03746C273\",\"name\":\"17to20_VerupLog.txt\",\"size\":\"23176\"}]},\"リンク\":{\"type\":\"LINK\",\"value\":\"https://cybozu.co.jp/\"},\"計算\":{\"type\":\"CALC\",\"value\":\"456\"},\"日付\":{\"type\":\"DATE\",\"value\":\"2012-01-11\"}}}", id);
-  private static final String NULL_TABLE_ROW = "{\"value\":{\"添付ファイル（null要素）\":{\"type\":\"FILE\",\"value\":[null,null]},\"添付ファイル（null項目）\":{\"type\":\"FILE\",\"value\":[{},{}]},\"複数選択（空）\":{\"type\":\"MULTI_SELECT\",\"value\":[]},\"リッチエディター\":{\"type\":\"RICH_TEXT\"},\"文字列（1行）\":{\"type\":\"SINGLE_LINE_TEXT\"},\"ユーザー選択（null項目）\":{\"type\":\"USER_SELECT\",\"value\":[{},{}]},\"文字列（複数行）\":{\"type\":\"MULTI_LINE_TEXT\"},\"ユーザー選択（空）\":{\"type\":\"USER_SELECT\",\"value\":[]},\"チェックボックス（null要素）\":{\"type\":\"CHECK_BOX\",\"value\":[null,null]},\"組織選択（null項目）\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[{},{}]},\"計算\":{\"type\":\"CALC\"},\"日付\":{\"type\":\"DATE\"},\"組織選択（空）\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[]},\"添付ファイル（空）\":{\"type\":\"FILE\",\"value\":[]},\"ラジオボタン\":{\"type\":\"RADIO_BUTTON\"},\"グループ選択（null項目）\":{\"type\":\"GROUP_SELECT\",\"value\":[{},{}]},\"複数選択（null要素）\":{\"type\":\"MULTI_SELECT\",\"value\":[null,null]},\"ドロップダウン\":{\"type\":\"DROP_DOWN\"},\"日時\":{\"type\":\"DATETIME\"},\"組織選択（null要素）\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[null,null]},\"時刻\":{\"type\":\"TIME\"},\"グループ選択（空）\":{\"type\":\"GROUP_SELECT\",\"value\":[]},\"数値\":{\"type\":\"NUMBER\"},\"ユーザー選択（null要素）\":{\"type\":\"USER_SELECT\",\"value\":[null,null]},\"グループ選択（null要素）\":{\"type\":\"GROUP_SELECT\",\"value\":[null,null]},\"リンク\":{\"type\":\"LINK\"},\"チェックボックス（空）\":{\"type\":\"CHECK_BOX\",\"value\":[]}}}";
+  public static final Function<Long, String> TABLE_ROW = (id) -> String.format("{\"id\":%d,\"value\":{"
+    + "\"リッチエディター\":{\"type\":\"RICH_TEXT\",\"value\":\"\\u003ca href\\u003d\\\"https://www.cybozu.com\\\"\\u003eサイボウズ\\u003c/a\\u003e\"},"
+    + "\"グループ選択\":{\"type\":\"GROUP_SELECT\",\"value\":[{\"name\":\"プロジェクトマネージャー\",\"code\":\"project_manager\"},{\"name\":\"チームリーダー\",\"code\":\"team_leader\"}]},"
+    + "\"文字列（1行）\":{\"type\":\"SINGLE_LINE_TEXT\",\"value\":\"テストです。\"},"
+    + "\"ラジオボタン\":{\"type\":\"RADIO_BUTTON\",\"value\":\"選択肢3\"},"
+    + "\"ドロップダウン\":{\"type\":\"DROP_DOWN\",\"value\":\"選択肢6\"},"
+    + "\"組織選択\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[{\"name\":\"開発部\",\"code\":\"kaihatsu\"},{\"name\":\"人事部\",\"code\":\"jinji\"}]},"
+    + "\"ユーザー選択\":{\"type\":\"USER_SELECT\",\"value\":[{\"name\":\"Noboru Sato\",\"code\":\"guest/sato@cybozu.com\"},{\"name\":\"Misaki Kato\",\"code\":\"kato\"}]},"
+    + "\"ユーザー選択(コードのみ)\":{\"type\":\"USER_SELECT\",\"value\":[{\"code\":\"guest/sato@cybozu.com\"},{\"code\":\"kato\"}]},"
+    + "\"ユーザー選択(コード配列)\":{\"type\":\"USER_SELECT\",\"value\":[\"guest/sato@cybozu.com\",\"kato\"]},"
+    + "\"日時\":{\"type\":\"DATETIME\",\"value\":\"2012-01-11T11:30:00Z\"},"
+    + "\"文字列（複数行）\":{\"type\":\"MULTI_LINE_TEXT\",\"value\":\"テスト\\nです。\"},"
+    + "\"時刻\":{\"type\":\"TIME\",\"value\":\"11:30\"},"
+    + "\"チェックボックス\":{\"type\":\"CHECK_BOX\",\"value\":[\"選択肢1\",\"選択肢2\"]},"
+    + "\"複数選択\":{\"type\":\"MULTI_SELECT\",\"value\":[\"選択肢4\",\"選択肢5\"]},"
+    + "\"数値\":{\"type\":\"NUMBER\",\"value\":\"123\"},"
+    + "\"添付ファイル\":{\"type\":\"FILE\",\"value\":[{\"contentType\":\"text/plain\",\"fileKey\":\"201202061155587E339F9067544F1A92C743460E3D12B3297\",\"name\":\"17to20_VerupLog (1).txt\",\"size\":\"23175\"},{\"contentType\":\"application/json\",\"fileKey\":\"201202061155583C763E30196F419E83E91D2E4A03746C273\",\"name\":\"17to20_VerupLog.txt\",\"size\":\"23176\"}]},"
+    + "\"リンク\":{\"type\":\"LINK\",\"value\":\"https://cybozu.co.jp/\"},"
+    + "\"計算\":{\"type\":\"CALC\",\"value\":\"456\"},\"日付\":{\"type\":\"DATE\",\"value\":\"2012-01-11\"}}}",
+    id);
+  private static final String NULL_TABLE_ROW = "{\"value\":{"
+    + "\"添付ファイル（null要素）\":{\"type\":\"FILE\",\"value\":[null,null]},"
+    + "\"添付ファイル（null項目）\":{\"type\":\"FILE\",\"value\":[{},{}]},"
+    + "\"複数選択（空）\":{\"type\":\"MULTI_SELECT\",\"value\":[]},"
+    + "\"リッチエディター\":{\"type\":\"RICH_TEXT\"},"
+    + "\"文字列（1行）\":{\"type\":\"SINGLE_LINE_TEXT\"},"
+    + "\"ユーザー選択（null項目）\":{\"type\":\"USER_SELECT\",\"value\":[{},{}]},"
+    + "\"文字列（複数行）\":{\"type\":\"MULTI_LINE_TEXT\"},"
+    + "\"ユーザー選択（空）\":{\"type\":\"USER_SELECT\",\"value\":[]},"
+    + "\"チェックボックス（null要素）\":{\"type\":\"CHECK_BOX\",\"value\":[null,null]},"
+    + "\"組織選択（null項目）\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[{},{}]},"
+    + "\"計算\":{\"type\":\"CALC\"},\"日付\":{\"type\":\"DATE\"},"
+    + "\"組織選択（空）\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[]},"
+    + "\"添付ファイル（空）\":{\"type\":\"FILE\",\"value\":[]},"
+    + "\"ラジオボタン\":{\"type\":\"RADIO_BUTTON\"},"
+    + "\"グループ選択（null項目）\":{\"type\":\"GROUP_SELECT\",\"value\":[{},{}]}"
+    + ",\"複数選択（null要素）\":{\"type\":\"MULTI_SELECT\",\"value\":[null,null]},"
+    + "\"ドロップダウン\":{\"type\":\"DROP_DOWN\"},"
+    + "\"日時\":{\"type\":\"DATETIME\"},"
+    + "\"組織選択（null要素）\":{\"type\":\"ORGANIZATION_SELECT\",\"value\":[null,null]},"
+    + "\"時刻\":{\"type\":\"TIME\"},"
+    + "\"グループ選択（空）\":{\"type\":\"GROUP_SELECT\",\"value\":[]},"
+    + "\"数値\":{\"type\":\"NUMBER\"},"
+    + "\"ユーザー選択（null要素）\":{\"type\":\"USER_SELECT\",\"value\":[null,null]},"
+    + "\"グループ選択（null要素）\":{\"type\":\"GROUP_SELECT\",\"value\":[null,null]},"
+    + "\"リンク\":{\"type\":\"LINK\"},"
+    + "\"チェックボックス（空）\":{\"type\":\"CHECK_BOX\",\"value\":[]}}}";
   // spotless:on
   @Test
   public void deserialize() {
@@ -98,6 +143,8 @@ public class DeserializerTest {
     tableRow.putField("複数選択", new MultiSelectFieldValue("選択肢4", "選択肢5"));
     tableRow.putField("ドロップダウン", new DropDownFieldValue("選択肢6"));
     tableRow.putField("ユーザー選択", new UserSelectFieldValue(user("guest/sato@cybozu.com", "Noboru Sato"), user("kato", "Misaki Kato")));
+    tableRow.putField("ユーザー選択(コードのみ)", new UserSelectFieldValue(user("guest/sato@cybozu.com", null), user("kato", null)));
+    tableRow.putField("ユーザー選択(コード配列)", new UserSelectFieldValue(user("guest/sato@cybozu.com"), user("kato")));
     tableRow.putField("組織選択", new OrganizationSelectFieldValue(organization("kaihatsu", "開発部"), organization("jinji", "人事部")));
     tableRow.putField("グループ選択", new GroupSelectFieldValue(group("project_manager", "プロジェクトマネージャー"), group("team_leader", "チームリーダー")));
     tableRow.putField("日付", new DateFieldValue(LocalDate.parse("2012-01-11")));
@@ -140,6 +187,10 @@ public class DeserializerTest {
     tableRow.putField("添付ファイル（null項目）", new FileFieldValue(fileBody(null, null, null, null), fileBody(null, null, null, null)));
     // spotless:on
     return tableRow;
+  }
+
+  private static User user(String code) {
+    return new User(code);
   }
 
   private static User user(String code, String name) {
