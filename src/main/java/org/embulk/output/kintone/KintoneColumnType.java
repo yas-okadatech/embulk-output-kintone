@@ -1,5 +1,8 @@
 package org.embulk.output.kintone;
 
+import com.kintone.client.model.Group;
+import com.kintone.client.model.Organization;
+import com.kintone.client.model.User;
 import com.kintone.client.model.record.CheckBoxFieldValue;
 import com.kintone.client.model.record.DateFieldValue;
 import com.kintone.client.model.record.DateTimeFieldValue;
@@ -265,7 +268,9 @@ public enum KintoneColumnType {
     @Override
     public UserSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
       LOGGER.info("USER_SELECT::getFieldValue: value={}", value);
-      return DESERIALIZER.deserialize(value.isEmpty() ? "[]" : value, UserSelectFieldValue.class);
+      List<String> codes = asList(value, option);
+      List<User> users = codes.stream().map(User::new).collect(Collectors.toList());
+      return new UserSelectFieldValue(users);
     }
 
     @Override
@@ -286,8 +291,10 @@ public enum KintoneColumnType {
 
     @Override
     public OrganizationSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      return DESERIALIZER.deserialize(
-          value.isEmpty() ? "[]" : value, OrganizationSelectFieldValue.class);
+      List<String> codes = asList(value, option);
+      List<Organization> organizations =
+          codes.stream().map(Organization::new).collect(Collectors.toList());
+      return new OrganizationSelectFieldValue(organizations);
     }
 
     @Override
@@ -308,7 +315,9 @@ public enum KintoneColumnType {
 
     @Override
     public GroupSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      return DESERIALIZER.deserialize(value.isEmpty() ? "[]" : value, GroupSelectFieldValue.class);
+      List<String> codes = asList(value, option);
+      List<Group> groups = codes.stream().map(Group::new).collect(Collectors.toList());
+      return new GroupSelectFieldValue(groups);
     }
 
     @Override
