@@ -364,6 +364,13 @@ public class KintoneColumnVisitorTest {
           assertThat(
               record.getFieldType("JSON|SUBTABLE.SINGLE_LINE_TEXT"),
               is(FieldType.SINGLE_LINE_TEXT));
+          //          assertThat(record.getFieldType("JSON|USER_SELECT"),
+          // is(FieldType.USER_SELECT));
+          //          assertThat(
+          //              record.getFieldType("JSON|ORGANIZATION_SELECT"),
+          // is(FieldType.ORGANIZATION_SELECT));
+          //          assertThat(record.getFieldType("JSON|GROUP_SELECT"),
+          // is(FieldType.GROUP_SELECT));
           assertThat(record.getSingleLineTextFieldValue("BOOLEAN|SINGLE_LINE_TEXT"), nullValue());
           assertThat(record.getNumberFieldValue("BOOLEAN"), nullValue());
           assertThat(record.getSingleLineTextFieldValue("LONG|SINGLE_LINE_TEXT"), nullValue());
@@ -415,6 +422,11 @@ public class KintoneColumnVisitorTest {
           assertThat(record.getSubtableFieldValue("JSON|SUBTABLE"), is(list()));
           assertThat(
               record.getSingleLineTextFieldValue("JSON|SUBTABLE.SINGLE_LINE_TEXT"), nullValue());
+          //          assertThat(record.getUserSelectFieldValue("JSON|USER_SELECT"), is(list()));
+          //          assertThat(
+          //              record.getOrganizationSelectFieldValue("JSON|ORGANIZATION_SELECT"),
+          // is(list()));
+          //          assertThat(record.getGroupSelectFieldValue("JSON|GROUP_SELECT"), is(list()));
           assertThat(idOrUpdateKey.getField(), is("LONG"));
           assertThat(idOrUpdateKey.getValue(), nullValue());
         });
@@ -475,6 +487,9 @@ public class KintoneColumnVisitorTest {
           assertThat(record.getFieldValue("JSON"), nullValue());
           assertThat(record.getFieldValue("JSON|SUBTABLE"), nullValue());
           assertThat(record.getFieldValue("JSON|SUBTABLE.SINGLE_LINE_TEXT"), nullValue());
+          //          assertThat(record.getFieldValue("JSON|USER_SELECT"), nullValue());
+          //          assertThat(record.getFieldValue("JSON|ORGANIZATION_SELECT"), nullValue());
+          //          assertThat(record.getFieldValue("JSON|GROUP_SELECT"), nullValue());
           assertThat(idOrUpdateKey.getField(), nullValue());
           assertThat(idOrUpdateKey.getValue(), nullValue());
         },
@@ -544,6 +559,11 @@ public class KintoneColumnVisitorTest {
           assertThat(record.getMultiLineTextFieldValue("JSON"), is("\"\""));
           assertThat(record.getSubtableFieldValue("JSON|SUBTABLE"), is(list()));
           assertThat(record.getFieldValue("JSON|SUBTABLE.SINGLE_LINE_TEXT"), nullValue());
+          //          assertThat(record.getUserSelectFieldValue("JSON|USER_SELECT"), is(list()));
+          //          assertThat(
+          //              record.getOrganizationSelectFieldValue("JSON|ORGANIZATION_SELECT"),
+          // is(list()));
+          //          assertThat(record.getGroupSelectFieldValue("JSON|GROUP_SELECT"), is(list()));
           assertThat(idOrUpdateKey.getField(), nullValue());
           assertThat(idOrUpdateKey.getValue(), nullValue());
         },
@@ -653,6 +673,9 @@ public class KintoneColumnVisitorTest {
         .add("JSON", Types.JSON)
         .add("JSON|SUBTABLE", Types.JSON)
         .add("JSON|SUBTABLE.SINGLE_LINE_TEXT", Types.JSON)
+        //        .add("JSON|USER_SELECT", Types.JSON)
+        //        .add("JSON|ORGANIZATION_SELECT", Types.JSON)
+        //        .add("JSON|GROUP_SELECT", Types.JSON)
         .build();
   }
 
@@ -709,6 +732,9 @@ public class KintoneColumnVisitorTest {
         .put(build("JSON", it -> it.setType("MULTI_LINE_TEXT")))
         .put(build("JSON|SUBTABLE", it -> it.setType("SUBTABLE")))
         .put(build("JSON|SUBTABLE.SINGLE_LINE_TEXT", it -> it.setType("SINGLE_LINE_TEXT")))
+        //        .put(build("JSON|USER_SELECT", it -> it.setType("USER_SELECT")))
+        //        .put(build("JSON|ORGANIZATION_SELECT", it -> it.setType("ORGANIZATION_SELECT")))
+        //        .put(build("JSON|GROUP_SELECT", it -> it.setType("GROUP_SELECT")))
         .build();
   }
 
@@ -770,6 +796,9 @@ public class KintoneColumnVisitorTest {
         .setNull("JSON")
         .setNull("JSON|SUBTABLE")
         .setNull("JSON|SUBTABLE.SINGLE_LINE_TEXT")
+        //        .setNull("JSON|USER_SELECT")
+        //        .setNull("JSON|ORGANIZATION_SELECT")
+        //        .setNull("JSON|GROUP_SELECT")
         .addRecord()
         .setBoolean("BOOLEAN|SINGLE_LINE_TEXT", false)
         .setBoolean("BOOLEAN", false)
@@ -821,6 +850,9 @@ public class KintoneColumnVisitorTest {
         .setJson("JSON", ValueFactory.newString(""))
         .setJson("JSON|SUBTABLE", ValueFactory.newString(""))
         .setJson("JSON|SUBTABLE.SINGLE_LINE_TEXT", ValueFactory.newString(""))
+        //        .setJson("JSON|USER_SELECT", ValueFactory.newString(""))
+        //        .setJson("JSON|ORGANIZATION_SELECT", ValueFactory.newString(""))
+        //        .setJson("JSON|GROUP_SELECT", ValueFactory.newString(""))
         .addRecord()
         .setBoolean("BOOLEAN|SINGLE_LINE_TEXT", true)
         .setBoolean("BOOLEAN", true)

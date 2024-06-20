@@ -1,5 +1,8 @@
 package org.embulk.output.kintone;
 
+import com.kintone.client.model.Group;
+import com.kintone.client.model.Organization;
+import com.kintone.client.model.User;
 import com.kintone.client.model.record.CheckBoxFieldValue;
 import com.kintone.client.model.record.DateFieldValue;
 import com.kintone.client.model.record.DateTimeFieldValue;
@@ -20,6 +23,7 @@ import com.kintone.client.model.record.SubtableFieldValue;
 import com.kintone.client.model.record.TimeFieldValue;
 import com.kintone.client.model.record.UpdateKey;
 import com.kintone.client.model.record.UserSelectFieldValue;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -39,6 +43,8 @@ import org.msgpack.value.ArrayValue;
 import org.msgpack.value.StringValue;
 import org.msgpack.value.Value;
 import org.msgpack.value.ValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum KintoneColumnType {
   SINGLE_LINE_TEXT {
@@ -261,7 +267,10 @@ public enum KintoneColumnType {
 
     @Override
     public UserSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      throw new UnsupportedOperationException();
+      LOGGER.info("USER_SELECT::getFieldValue: value={}", value);
+      List<String> codes = asList(value, option);
+      List<User> users = codes.stream().map(User::new).collect(Collectors.toList());
+      return new UserSelectFieldValue(users);
     }
 
     @Override
@@ -271,7 +280,7 @@ public enum KintoneColumnType {
 
     @Override
     protected List<Type> getSupportedTypes() {
-      return Collections.emptyList();
+      return Collections.singletonList(Types.JSON);
     }
   },
   ORGANIZATION_SELECT {
@@ -282,7 +291,10 @@ public enum KintoneColumnType {
 
     @Override
     public OrganizationSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      throw new UnsupportedOperationException();
+      List<String> codes = asList(value, option);
+      List<Organization> organizations =
+          codes.stream().map(Organization::new).collect(Collectors.toList());
+      return new OrganizationSelectFieldValue(organizations);
     }
 
     @Override
@@ -292,7 +304,7 @@ public enum KintoneColumnType {
 
     @Override
     protected List<Type> getSupportedTypes() {
-      return Collections.emptyList();
+      return Collections.singletonList(Types.JSON);
     }
   },
   GROUP_SELECT {
@@ -303,7 +315,9 @@ public enum KintoneColumnType {
 
     @Override
     public GroupSelectFieldValue getFieldValue(String value, KintoneColumnOption option) {
-      throw new UnsupportedOperationException();
+      List<String> codes = asList(value, option);
+      List<Group> groups = codes.stream().map(Group::new).collect(Collectors.toList());
+      return new GroupSelectFieldValue(groups);
     }
 
     @Override
@@ -313,7 +327,7 @@ public enum KintoneColumnType {
 
     @Override
     protected List<Type> getSupportedTypes() {
-      return Collections.emptyList();
+      return Collections.singletonList(Types.JSON);
     }
   },
   DATE {
@@ -503,6 +517,8 @@ public enum KintoneColumnType {
   };
   private static final Deserializer DESERIALIZER = new Deserializer();
   private static final Timestamp EPOCH = Timestamp.ofInstant(Instant.EPOCH);
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public static KintoneColumnType getType(
       KintoneColumnOption option, KintoneColumnType defaultType) {

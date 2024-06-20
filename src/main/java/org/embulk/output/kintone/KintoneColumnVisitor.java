@@ -3,6 +3,7 @@ package org.embulk.output.kintone;
 import com.kintone.client.model.record.FieldValue;
 import com.kintone.client.model.record.Record;
 import com.kintone.client.model.record.UpdateKey;
+import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
@@ -16,8 +17,12 @@ import org.embulk.spi.PageReader;
 import org.embulk.spi.time.Timestamp;
 import org.msgpack.value.Value;
 import org.msgpack.value.ValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KintoneColumnVisitor implements ColumnVisitor {
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private static final List<String> BUILTIN_FIELD_CODES = Arrays.asList(Id.FIELD, "$revision");
   private final PageReader reader;
   private final Set<Column> derived;
@@ -186,6 +191,12 @@ public class KintoneColumnVisitor implements ColumnVisitor {
     KintoneColumnType defaultType =
         isDerived(column) ? KintoneColumnType.SUBTABLE : KintoneColumnType.MULTI_LINE_TEXT;
     KintoneColumnType type = KintoneColumnType.getType(option, defaultType);
+    LOGGER.info(
+        "jsonColumn: column={}, option={}, option.type={}, type={}",
+        column,
+        option,
+        option == null ? "null" : option.getType(),
+        type);
     String fieldCode = getFieldCode(column);
     if (isBuiltin(fieldCode)) {
       return;
@@ -287,6 +298,7 @@ public class KintoneColumnVisitor implements ColumnVisitor {
       UpdateKey updateKey,
       Value value,
       KintoneColumnOption option) {
+    LOGGER.info("setJson: type={}, fieldCode={}, value={}", type, fieldCode, value.toString());
     FieldValue fieldValue = type.getFieldValue(value, option);
     if (updateKey != null) {
       type.setUpdateKey(updateKey, fieldCode, fieldValue);

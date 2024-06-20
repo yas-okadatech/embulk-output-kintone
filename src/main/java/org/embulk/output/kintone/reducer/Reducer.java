@@ -67,6 +67,7 @@ public class Reducer {
     this.schema = schema(task, schema);
     this.task.setDerivedColumns(
         range().mapToObj(this.schema::getColumn).collect(Collectors.toSet()));
+    LOGGER.info("Derived columns: {}", this.task.getDerivedColumns());
   }
 
   public ConfigDiff reduce(List<TaskReport> taskReports, Column column) {
@@ -259,6 +260,18 @@ public class Reducer {
             == KintoneColumnType.SUBTABLE
         ? Types.JSON
         : Types.STRING;
+    //
+    //    List<KintoneColumnType> JSON_TYPES =
+    //        Arrays.asList(
+    //            KintoneColumnType.SUBTABLE,
+    //            KintoneColumnType.USER_SELECT,
+    //            KintoneColumnType.ORGANIZATION_SELECT,
+    //            KintoneColumnType.GROUP_SELECT);
+    //    return JSON_TYPES.contains(
+    //            KintoneColumnType.getType(
+    //                task.getColumnOptions().get(name), KintoneColumnType.SUBTABLE))
+    //        ? Types.JSON
+    //        : Types.STRING;
   }
 
   private static File file(String suffix) {

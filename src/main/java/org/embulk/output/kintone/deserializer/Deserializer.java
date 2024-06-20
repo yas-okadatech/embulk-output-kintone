@@ -168,7 +168,11 @@ public class Deserializer {
 
   private User deserializeUser(JsonParser parser, DeserializationContext context) {
     JsonNode node = readTree(parser);
-    return new User(get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    if (node.isObject()) {
+      return new User(get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    } else {
+      return new User(node.asText());
+    }
   }
 
   private OrganizationSelectFieldValue deserializeOrganizationSelect(
@@ -178,8 +182,12 @@ public class Deserializer {
 
   private Organization deserializeOrganization(JsonParser parser, DeserializationContext context) {
     JsonNode node = readTree(parser);
-    return new Organization(
-        get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    if (node.isObject()) {
+      return new Organization(
+          get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    } else {
+      return new Organization(node.asText());
+    }
   }
 
   private GroupSelectFieldValue deserializeGroupSelect(
@@ -189,7 +197,11 @@ public class Deserializer {
 
   private Group deserializeGroup(JsonParser parser, DeserializationContext context) {
     JsonNode node = readTree(parser);
-    return new Group(get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    if (node.isObject()) {
+      return new Group(get(node, "name", JsonNode::asText), get(node, "code", JsonNode::asText));
+    } else {
+      return new Group(node.asText());
+    }
   }
 
   private DateFieldValue deserializeDate(JsonParser parser, DeserializationContext context) {
