@@ -4,6 +4,7 @@ import com.kintone.client.model.record.CheckBoxFieldValue;
 import com.kintone.client.model.record.DateFieldValue;
 import com.kintone.client.model.record.DateTimeFieldValue;
 import com.kintone.client.model.record.DropDownFieldValue;
+import com.kintone.client.model.record.FieldType;
 import com.kintone.client.model.record.FieldValue;
 import com.kintone.client.model.record.FileFieldValue;
 import com.kintone.client.model.record.GroupSelectFieldValue;
@@ -507,6 +508,14 @@ public enum KintoneColumnType {
   public static KintoneColumnType getType(
       KintoneColumnOption option, KintoneColumnType defaultType) {
     return option != null ? valueOf(option.getType()) : defaultType;
+  }
+
+  public static KintoneColumnType getType(FieldType type) {
+    if (type == null) {
+      return null;
+    }
+
+    return valueOf(type.toString());
   }
 
   public abstract FieldValue getFieldValue();
