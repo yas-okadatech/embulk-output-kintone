@@ -6,6 +6,7 @@ import com.kintone.client.model.app.field.FieldProperty;
 import com.kintone.client.model.app.field.SubtableFieldProperty;
 import com.kintone.client.model.record.FieldType;
 import java.io.IOException;
+import java.lang.invoke.MethodHandles;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -16,8 +17,12 @@ import org.embulk.spi.Column;
 import org.embulk.spi.Schema;
 import org.embulk.spi.type.Type;
 import org.embulk.spi.type.Types;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class KintoneClient implements AutoCloseable {
+  private static final Logger LOGGER =
+    LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final PluginTask task;
   private final Schema schema;
   private final com.kintone.client.KintoneClient client;
@@ -54,6 +59,7 @@ public class KintoneClient implements AutoCloseable {
     Map<String, FieldProperty> visitor = new LinkedHashMap<>();
     fields.forEach(
         (field, fieldProperty) -> KintoneClient.addSubTableFields(visitor, fieldProperty));
+    LOGGER.info("root visitor: {}", visitor.keySet());
     fields.putAll(visitor);
     KintoneMode.of(task).validate(task, this);
   }
@@ -63,6 +69,7 @@ public class KintoneClient implements AutoCloseable {
     if (fieldProperty instanceof SubtableFieldProperty) {
       SubtableFieldProperty subtableFieldProperty = (SubtableFieldProperty) fieldProperty;
       Map<String, FieldProperty> subFields = subtableFieldProperty.getFields();
+      LOGGER.info("subFields: {}", subFields.keySet());
       visitor.putAll(subFields);
       subFields.forEach(
           (subField, subFieldProperty) ->
