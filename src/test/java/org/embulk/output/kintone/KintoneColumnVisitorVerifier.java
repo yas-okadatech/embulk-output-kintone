@@ -30,22 +30,29 @@ public class KintoneColumnVisitorVerifier {
   }
 
   public KintoneColumnVisitorVerifier(
-    Lazy<KintoneClient> client,
-    Schema schema,
-    Set<Column> derived,
-    Map<String, KintoneColumnOption> options,
-    boolean preferNulls,
-    boolean ignoreNulls,
-    String reduceKeyName,
-    String updateKeyName,
-    Page page) {
+      Lazy<KintoneClient> client,
+      Schema schema,
+      Set<Column> derived,
+      Map<String, KintoneColumnOption> options,
+      boolean preferNulls,
+      boolean ignoreNulls,
+      String reduceKeyName,
+      String updateKeyName,
+      Page page) {
     this.schema = schema;
     this.options = options;
     reader = new PageReader(schema);
     reader.setPage(page);
     visitor =
         new KintoneColumnVisitor(
-          client, reader, derived, options, preferNulls, ignoreNulls, reduceKeyName, updateKeyName);
+            client,
+            reader,
+            derived,
+            options,
+            preferNulls,
+            ignoreNulls,
+            reduceKeyName,
+            updateKeyName);
   }
 
   public void verify() {

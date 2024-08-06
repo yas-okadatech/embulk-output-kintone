@@ -1,5 +1,6 @@
 package org.embulk.output.kintone.reducer;
 
+import java.lang.invoke.MethodHandles;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -15,6 +16,8 @@ import org.msgpack.value.ArrayValue;
 import org.msgpack.value.MapValue;
 import org.msgpack.value.Value;
 import org.msgpack.value.ValueFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum ReduceType {
   BOOLEAN {
@@ -62,6 +65,7 @@ public enum ReduceType {
   STRING {
     @Override
     public MapValue value(String value, KintoneColumnOption option) {
+      LOGGER.info("STRING: value = {}", value);
       KintoneColumnType type = KintoneColumnType.getType(option, KintoneColumnType.MULTI_LINE_TEXT);
       Supplier<Value> supplier = () -> type.asValue(type.getFieldValue(value, option));
       return value(type, value, supplier);
@@ -100,6 +104,8 @@ public enum ReduceType {
       return order(order);
     }
   };
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private static final Value NIL = ValueFactory.newNil();
   private static final Value ID = ValueFactory.newString("id");
   private static final Value TYPE = ValueFactory.newString("type");
