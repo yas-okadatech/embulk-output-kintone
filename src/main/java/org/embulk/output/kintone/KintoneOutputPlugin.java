@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class KintoneOutputPlugin implements OutputPlugin {
   private static final Logger LOGGER =
-    LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Override
   public ConfigDiff transaction(
