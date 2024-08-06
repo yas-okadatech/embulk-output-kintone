@@ -69,7 +69,7 @@ public enum ReduceType {
   STRING {
     @Override
     public MapValue value(String value, KintoneColumnOption option, Lazy<KintoneClient> client) {
-      LOGGER.info("STRING: value = {}", value);
+      LOGGER.info("STRING: value = {}, option = {}", value, option);
       KintoneColumnType defaultType = ReduceType.getType(client, option, value);
       KintoneColumnType type = KintoneColumnType.getType(option, defaultType);
       Supplier<Value> supplier = () -> type.asValue(type.getFieldValue(value, option));
