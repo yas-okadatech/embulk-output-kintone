@@ -26,7 +26,8 @@ import org.slf4j.LoggerFactory;
 public enum ReduceType {
   BOOLEAN {
     @Override
-    public MapValue value(String value, KintoneColumnOption option, Lazy<KintoneClient> client) {
+    public MapValue value(
+        String value, KintoneColumnOption option, String columnName, Lazy<KintoneClient> client) {
       KintoneColumnType type = KintoneColumnType.getType(option, KintoneColumnType.NUMBER);
       Supplier<Value> supplier =
           () -> type.asValue(type.getFieldValue(Boolean.parseBoolean(value), option));
@@ -40,7 +41,8 @@ public enum ReduceType {
   },
   LONG {
     @Override
-    public MapValue value(String value, KintoneColumnOption option, Lazy<KintoneClient> client) {
+    public MapValue value(
+        String value, KintoneColumnOption option, String columnName, Lazy<KintoneClient> client) {
       KintoneColumnType type = KintoneColumnType.getType(option, KintoneColumnType.NUMBER);
       Supplier<Value> supplier =
           () -> type.asValue(type.getFieldValue(Long.parseLong(value), option));
@@ -54,7 +56,8 @@ public enum ReduceType {
   },
   DOUBLE {
     @Override
-    public MapValue value(String value, KintoneColumnOption option, Lazy<KintoneClient> client) {
+    public MapValue value(
+        String value, KintoneColumnOption option, String columnName, Lazy<KintoneClient> client) {
       KintoneColumnType type = KintoneColumnType.getType(option, KintoneColumnType.NUMBER);
       Supplier<Value> supplier =
           () -> type.asValue(type.getFieldValue(Double.parseDouble(value), option));
@@ -68,9 +71,10 @@ public enum ReduceType {
   },
   STRING {
     @Override
-    public MapValue value(String value, KintoneColumnOption option, Lazy<KintoneClient> client) {
-      LOGGER.info("STRING: value = {}, option = {}", value, option);
-      KintoneColumnType defaultType = ReduceType.getType(client, option, value);
+    public MapValue value(
+        String value, KintoneColumnOption option, String columnName, Lazy<KintoneClient> client) {
+      LOGGER.info("STRING: value = {}, option = {}, columnName = {}", value, option, columnName);
+      KintoneColumnType defaultType = ReduceType.getType(client, option, columnName);
       KintoneColumnType type = KintoneColumnType.getType(option, defaultType);
       Supplier<Value> supplier = () -> type.asValue(type.getFieldValue(value, option));
       return value(type, value, supplier);
@@ -83,7 +87,8 @@ public enum ReduceType {
   },
   TIMESTAMP {
     @Override
-    public MapValue value(String value, KintoneColumnOption option, Lazy<KintoneClient> client) {
+    public MapValue value(
+        String value, KintoneColumnOption option, String columnName, Lazy<KintoneClient> client) {
       KintoneColumnType type = KintoneColumnType.getType(option, KintoneColumnType.DATETIME);
       Supplier<Value> supplier =
           () -> type.asValue(type.getFieldValue(Timestamp.ofInstant(Instant.parse(value)), option));
@@ -97,7 +102,8 @@ public enum ReduceType {
   },
   JSON {
     @Override
-    public MapValue value(String value, KintoneColumnOption option, Lazy<KintoneClient> client) {
+    public MapValue value(
+        String value, KintoneColumnOption option, String columnName, Lazy<KintoneClient> client) {
       KintoneColumnType type = KintoneColumnType.getType(option, KintoneColumnType.MULTI_LINE_TEXT);
       Supplier<Value> supplier =
           () -> type.asValue(type.getFieldValue(Reducer.PARSER.parse(value), option));
@@ -119,7 +125,7 @@ public enum ReduceType {
   private static final Value SORT_VALUE = ValueFactory.newString("$$sort_value");
 
   public abstract MapValue value(
-      String value, KintoneColumnOption option, Lazy<KintoneClient> client);
+      String value, KintoneColumnOption option, String columnName, Lazy<KintoneClient> client);
 
   public abstract Comparator<String> comparator(KintoneSortColumn.Order order);
 
@@ -162,7 +168,7 @@ public enum ReduceType {
 
   public static MapValue value(
       Column column, List<String> values, KintoneColumnOption option, Lazy<KintoneClient> client) {
-    return valueOf(column).value(values.get(column.getIndex()), option, client);
+    return valueOf(column).value(values.get(column.getIndex()), option, column.getName(), client);
   }
 
   protected static MapValue value(KintoneColumnType type, String value, Supplier<Value> supplier) {

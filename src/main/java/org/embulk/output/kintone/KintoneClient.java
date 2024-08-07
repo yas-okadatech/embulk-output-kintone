@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class KintoneClient implements AutoCloseable {
   private static final Logger LOGGER =
-    LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   private final PluginTask task;
   private final Schema schema;
   private final com.kintone.client.KintoneClient client;
