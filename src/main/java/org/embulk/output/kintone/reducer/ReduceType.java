@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.embulk.config.ConfigException;
 import org.embulk.output.kintone.KintoneClient;
 import org.embulk.output.kintone.KintoneColumnOption;
@@ -168,7 +170,18 @@ public enum ReduceType {
 
   public static MapValue value(
       Column column, List<String> values, KintoneColumnOption option, Lazy<KintoneClient> client) {
-    return valueOf(column).value(values.get(column.getIndex()), option, column.getName(), client);
+    return valueOf(column)
+        .value(values.get(column.getIndex()), option, fieldCode(column.getName()), client);
+  }
+
+  private static String fieldCode(String columnName) {
+    LOGGER.info("fieldCode: columnName = {}", columnName);
+    Matcher m = Pattern.compile("^.*\\.(.*)$").matcher(columnName);
+    if (m.find()) {
+      return m.group(1);
+    } else {
+      return columnName;
+    }
   }
 
   protected static MapValue value(KintoneColumnType type, String value, Supplier<Value> supplier) {
