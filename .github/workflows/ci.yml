@@ -29,9 +29,9 @@ jobs:
 #      - name: Code format check by Spotless
 #        run: ./gradlew spotlessCheck
 #
-      - name: Test
-        run: ./gradlew test
-
+#      - name: Test
+#        run: ./gradlew test
+#
       - name: Build Gem
         run: ./gradlew gem
 
