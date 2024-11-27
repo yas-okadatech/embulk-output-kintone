@@ -10,9 +10,14 @@ import com.kintone.client.Json;
 import com.kintone.client.model.record.Record;
 import com.kintone.client.model.record.RecordForUpdate;
 import com.kintone.client.model.record.UpdateKey;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -29,7 +34,7 @@ import org.embulk.config.TaskSource;
 import org.embulk.output.kintone.record.Id;
 import org.embulk.output.kintone.record.Skip;
 import org.embulk.spi.Column;
-import org.embulk.spi.Exec;
+import org.embulk.spi.ExecInternal;
 import org.embulk.spi.OutputPlugin;
 import org.embulk.spi.Schema;
 import org.embulk.spi.TransactionalPageOutput;
@@ -39,6 +44,8 @@ import org.embulk.test.TestingEmbulk;
 import org.junit.Rule;
 import org.mockito.InOrder;
 import org.msgpack.value.Value;
+import org.embulk.spi.FileInputPlugin;
+import org.embulk.input.file.LocalFileInputPlugin;
 
 public class TestKintoneOutputPlugin extends KintoneOutputPlugin {
   private static final JsonParser PARSER = new JsonParser();
@@ -46,6 +53,7 @@ public class TestKintoneOutputPlugin extends KintoneOutputPlugin {
   @Rule
   public final TestingEmbulk embulk =
       TestingEmbulk.builder()
+//          .registerPlugin(FileInputPlugin.class, "file", LocalFileInputPlugin.class)
           .registerPlugin(OutputPlugin.class, "kintone", TestKintoneOutputPlugin.class)
           .build();
 
@@ -96,7 +104,29 @@ public class TestKintoneOutputPlugin extends KintoneOutputPlugin {
   }
 
   protected ConfigSource loadYamlResource(String name) {
+    // for debug
+    System.out.printf("path: %s\n", getResourceName(name));
+    try (InputStream in = EmbulkTests.class.getResourceAsStream(getResourceName(name))) {
+      String var3 = inputStreamToString(in);
+      System.out.printf("var3: %s\n", var3);
+    } catch (IOException ex) {
+      throw new RuntimeException(ex);
+    }
+    // for debug
+
     return embulk.loadYamlResource(getResourceName(name));
+  }
+
+  private static String inputStreamToString(InputStream stream) throws IOException {
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+    byte[] buffer = new byte[1024];
+
+    int length;
+    while((length = stream.read(buffer)) != -1) {
+      output.write(buffer, 0, length);
+    }
+
+    return output.toString(StandardCharsets.UTF_8.toString());
   }
 
   protected ConfigSource fromYamlString(String string) {
@@ -170,7 +200,7 @@ public class TestKintoneOutputPlugin extends KintoneOutputPlugin {
     return json == null || json.isEmpty()
         ? Collections.emptySet()
         : PARSER.parse(json).asArrayValue().list().stream()
-            .map(value -> Exec.getModelManager().readObject(Column.class, value.toJson()))
+            .map(value -> ExecInternal.getModelManager().readObject(Column.class, value.toJson()))
             .collect(Collectors.toSet());
   }
 
@@ -269,6 +299,9 @@ public class TestKintoneOutputPlugin extends KintoneOutputPlugin {
   }
 
   private static File getResourceFile(String name) {
+    System.out.printf("getResourceFile: res name: %s\n", getResourceName(name));
+    System.out.printf("getResourceFile: res: %s\n", getResource(getResourceName(name)));
+
     return toPath(Objects.requireNonNull(getResource(getResourceName(name)))).toFile();
   }
 
@@ -281,7 +314,7 @@ public class TestKintoneOutputPlugin extends KintoneOutputPlugin {
   }
 
   private static String getResourceName(String name) {
-    return String.format("org/embulk/output/kintone/%s", name);
+    return String.format("/org/embulk/output/kintone/%s", name);
   }
 
   private static Path toPath(URL url) {
@@ -295,7 +328,8 @@ public class TestKintoneOutputPlugin extends KintoneOutputPlugin {
   @SuppressWarnings("UnstableApiUsage")
   private static URL getResource(String resourceName) {
     try {
-      return Resources.getResource(resourceName);
+      return EmbulkTests.class.getResource(resourceName);
+//      return Resources.getResource(resourceName);
     } catch (IllegalArgumentException e) {
       return null;
     }
